@@ -51,14 +51,17 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public  String createUser(@RequestBody RequestUser user){
+    public  ResponseEntity<ResponseUser> createUser(@RequestBody RequestUser user){
         ModelMapper mapper = new ModelMapper();
         mapper.getConfiguration().setMatchingStrategy(MatchingStrategies.STRICT);
 
         UserDto userDto = mapper.map(user , UserDto.class);
 
         userService.createUser(userDto);
-        return "Create user method is called";
+
+        ResponseUser responseUser = mapper.map(userDto, ResponseUser.class);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(responseUser);
     }
 
     @GetMapping("/users")
@@ -72,14 +75,14 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(result);
     }
 
-    @GetMapping("/users/{userId}")
-    public ResponseEntity <ResponseUser> getUser(@PathVariable ("userId") String userId){
-
-        UserDto user = userService.getUserByUserId();
-
-        ResponseUser returnValue = new ModelMapper().map(user, ResponseUser.class);
-
-
-        return ResponseEntity.status(HttpStatus.OK).body(returnValue);
-    }
+//    @GetMapping("/users/{userId}")
+//    public ResponseEntity <ResponseUser> getUser(@PathVariable ("userId") String userId){
+//
+//        UserDto user = userService.getUserByUserId();
+//
+//        ResponseUser returnValue = new ModelMapper().map(user, ResponseUser.class);
+//
+//
+//        return ResponseEntity.status(HttpStatus.OK).body(returnValue);
+//    }
 }
